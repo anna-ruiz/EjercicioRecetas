@@ -1,6 +1,7 @@
 package com.example.ejerciciorecetas.Adapters;
 
 import android.content.Context;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,65 +14,63 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ejerciciorecetas.R;
-import com.example.ejerciciorecetas.activities.MealsActivity;
+import com.example.ejerciciorecetas.activities.DetailsActivity;
 import com.example.ejerciciorecetas.constantes.CONSTANTES;
-import com.example.ejerciciorecetas.modelos.CategoriesItem;
+import com.example.ejerciciorecetas.modelos.MealsItem;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryVH> {
-    private Context context;
-    private int resource;
-    private List<CategoriesItem> objects;
+public class MealAdapter extends RecyclerView.Adapter<MealAdapter.MealVH> {
 
-    public CategoryAdapter(Context context, int resource, List<CategoriesItem> objects) {
+    private Context context;
+    private int resources;
+    private List<MealsItem> objects;
+
+    public MealAdapter(Context context, int resources, List<MealsItem> objects) {
         this.context = context;
-        this.resource = resource;
+        this.resources = resources;
         this.objects = objects;
     }
 
     @NonNull
     @Override
-    public CategoryVH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-        View itemView = LayoutInflater.from(context).inflate(resource, null);
-
-        //PAra q el contenido se adapte al tamaño de la pantalla
+    public MealVH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(context).inflate(resources,null);
         itemView.setLayoutParams(new RecyclerView.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         ));
-
-        return new CategoryVH(itemView);
+        return new MealVH(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CategoryVH holder, int position) {
+    public void onBindViewHolder(@NonNull MealVH holder, int position) {
+        MealsItem meal = objects.get(position);
 
-        CategoriesItem category = objects.get(position);
+        holder.lbName.setText(meal.getStrMeal()); //asignamos nombre
 
-        holder.lbName.setText(category.getStrCategory());
-
-        Picasso.get()
-                .load(category.getStrCategoryThumb())
+        Picasso.get() //asignamos valor foto
+                .load(meal.getStrMealThumb())
+                .placeholder(R.drawable.ic_launcher_background) //Mientras carga
+                .error(R.drawable.ic_launcher_foreground) //En caso de error
                 .into(holder.imPhoto);
 
-        //para X al hacer click en cualquier parte de la fila debemos usar el holder
+        //para poder acceder a detalles/Details
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //para pasar de ventana    debemos decirle dnd esta (context)
-                Intent intent = new Intent(context, MealsActivity.class);
-                //para pasar info al cambiar de ventana
+                //para cambiar de actividad
+                Intent intent = new Intent(context, DetailsActivity.class);
+                //para pasar el id
                 Bundle bundle = new Bundle();
-                bundle.putString(CONSTANTES.NOMBRE_CATEGORIA, category.getStrCategory());
+                bundle.putString(CONSTANTES.ID_RECETA, meal.getIdMeal());
                 intent.putExtras(bundle);
 
+                //lanzamos la nueva actividad
                 context.startActivity(intent);
             }
         });
-
     }
 
     @Override
@@ -79,12 +78,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         return objects.size();
     }
 
-    public class CategoryVH extends RecyclerView.ViewHolder{
+    public class MealVH extends RecyclerView.ViewHolder{
         ImageView imPhoto;
         TextView lbName;
 
-        public CategoryVH(@NonNull View itemView) {
+        public MealVH(@NonNull View itemView) {
             super(itemView);
+
             imPhoto = itemView.findViewById(R.id.imPhotoRowViewHolder);
             lbName = itemView.findViewById(R.id.lbNameRowViewHolder);
         }

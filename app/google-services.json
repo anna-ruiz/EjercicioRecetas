@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "640954578584",
+    "project_id": "ejerciciorecetas-1ee98",
+    "storage_bucket": "ejerciciorecetas-1ee98.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:640954578584:android:bf9ea92bfb21c2fb5dc2ed",
+        "android_client_info": {
+          "package_name": "com.example.ejerciciorecetas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyNDEzF6-hXnrVe-ZWCqjmDbk4EjQNwIo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

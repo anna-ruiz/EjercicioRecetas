@@ -19,6 +19,10 @@ public interface ApiConexiones {
     //DEbemos poner c en el parametro xq es asi en la url original /filter.php?c=Seafood
     Call<Meals> getMeals(@Query("c") String categoria);
 
+    //Para traer una receta x su id
+    @GET("/api/json/v1/1/lookup.php?i=52772")
+    Call<Meals> getRecipe(@Query("i")String id);
+
 
 
 
