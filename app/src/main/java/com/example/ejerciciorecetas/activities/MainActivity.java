@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -11,6 +12,7 @@ import com.example.ejerciciorecetas.Adapters.CategoryAdapter;
 import com.example.ejerciciorecetas.R;
 import com.example.ejerciciorecetas.conexiones.ApiConexiones;
 import com.example.ejerciciorecetas.conexiones.RetrofitObject;
+import com.example.ejerciciorecetas.constantes.CONSTANTES;
 import com.example.ejerciciorecetas.databinding.ActivityMainBinding;
 import com.example.ejerciciorecetas.modelos.Categories;
 import com.example.ejerciciorecetas.modelos.CategoriesItem;
@@ -31,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView.LayoutManager lm;
 
+    private SharedPreferences sp; //para poder acceder a los valores guardados en el SP
+
 
 
     @Override
@@ -41,6 +45,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         listCategories = new ArrayList<>();
+
+        //inicializaamos el sp pasandole el key/nombre fichero y el modo
+        sp = getSharedPreferences(CONSTANTES.ULTIMA_RECETA, MODE_PRIVATE);
+        verUltimoAcceso();
+
         adapter = new CategoryAdapter(this, R.layout.row_view_holder, listCategories);
         lm = new LinearLayoutManager(this);
 
@@ -50,6 +59,14 @@ public class MainActivity extends AppCompatActivity {
         doGetCategories();
 
 
+    }
+
+    private void verUltimoAcceso() {
+        //metodo para recoger la info guardada en las SharedPreferences
+        String email = sp.getString(CONSTANTES.EMAIL, "");
+        String receta = sp.getString(CONSTANTES.RECETA, "");
+
+        Toast.makeText(this, "Email: "+email+" |  Receta: "+receta, Toast.LENGTH_SHORT).show();
     }
 
     private void doGetCategories() {

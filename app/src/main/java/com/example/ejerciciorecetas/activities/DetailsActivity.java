@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,6 +45,7 @@ public class DetailsActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference reference;
     private ArrayList<MealsItem> listaRecipes; //para almacenar la lista
+    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,10 @@ public class DetailsActivity extends AppCompatActivity {
 
         listaRecipes = new ArrayList<>();
         database = FirebaseDatabase.getInstance("https://ejerciciorecetas-1ee98-default-rtdb.europe-west1.firebasedatabase.app/");
+
+        //inicializamos las shared preferences, el modo debe ser privado!!!! los otros estan deprecated
+        sp = getSharedPreferences(CONSTANTES.ULTIMA_RECETA, MODE_PRIVATE);
+
 
         //cogemos la info del id del intent
         String id = getIntent().getExtras().getString(CONSTANTES.ID_RECETA);
@@ -71,13 +77,18 @@ public class DetailsActivity extends AppCompatActivity {
                 user = FirebaseAuth.getInstance().getCurrentUser();
 
                 //Comprobamos si el user esta loggeado
-                if (user == null){
-                    //Si no esta logeado, abrimos la actividad Login
+                if (user == null){ //Si no esta logeado, abrimos la actividad Login
                     //como si q estamos en una actividad y no queremos mandar info, podemos usar startActivity
                     startActivity(new Intent(DetailsActivity.this, LoginActivity.class));
 
-                }else {
-                    //Si si esta logeado
+                }else {//Si si esta logeado
+                    //Abrimos editor de sp para poder insertar la info de la receta en las SP
+                    SharedPreferences.Editor editor = sp.edit();
+                    //le passamos la key y la info
+                    editor.putString(CONSTANTES.EMAIL, user.getEmail());
+                    editor.putString(CONSTANTES.RECETA, meal.getStrMeal());
+                    editor.apply(); //si no no se efectuan los cambios!!!
+
                     //Cuando uso la BD de RealTime necesito la variable de datbase (q es una instancia a la BD q nos conectamos)
                     //Como es una BD no relacional , va por nodos, debemos saber a que nodo de la BD debemos llegar (la referencia)
                             //le decimos BD, referencia (el UID del user) y le decimos q escribe dentro del hijo (en este caso recipes)
